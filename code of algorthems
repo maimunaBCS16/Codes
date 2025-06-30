@@ -1,0 +1,16 @@
+def vertex_cover_approximation(edges):
+    edge_set = set(edges)
+    cover = set()
+
+    while edge_set:
+        u, v = edge_set.pop()
+        cover.add(u)
+        cover.add(v)
+        edge_set = {e for e in edge_set if u not in e and v not in e}
+
+    return cover
+
+# Example input
+edges = [(1, 2), (1, 3), (2, 3), (3, 4), (4, 5)]
+cover = vertex_cover_approximation(edges)
+print("Approximate Vertex Cover:", cover)
