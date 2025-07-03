@@ -1,0 +1,44 @@
+import math
+
+class Item:
+    def __init__(self, value, weight):
+        self.value = value
+        self.weight = weight
+
+def greedy_knapsack(items, capacity):
+    items.sort(key=lambda x: x.value / x.weight, reverse=True)
+    total_value, total_weight = 0, 0
+    for item in items:
+        if total_weight + item.weight <= capacity:
+            total_value += item.value
+            total_weight += item.weight
+    return total_value
+
+def fptas_knapsack(items, capacity, epsilon):
+    n = len(items)
+    V_max = max(item.value for item in items)
+    scale = epsilon * V_max / n
+    scaled_items = [
+        Item(value=math.floor(item.value / scale), weight=item.weight)
+        for item in items
+    ]
+    max_scaled_value = sum(item.value for item in scaled_items)
+
+    dp = [math.inf] * (max_scaled_value + 1)
+    dp[0] = 0
+
+    for item in scaled_items:
+        for v in range(max_scaled_value, item.value - 1, -1):
+            if dp[v - item.value] + item.weight <= capacity:
+                dp[v] = min(dp[v], dp[v - item.value] + item.weight)
+
+    for v in range(max_scaled_value, -1, -1):
+        if dp[v] <= capacity:
+            return v * scale
+    return 0
+
+if __name__ == "__main__":
+    items = [Item(60, 10), Item(100, 20), Item(120, 30)]
+    capacity = 50
+    print("Greedy:", greedy_knapsack(items, capacity))
+    print("FPTAS (ε=0.1):", fptas_knapsack(items, capacity, 0.1))
