@@ -34,11 +34,5 @@ def fptas_knapsack(items, capacity, epsilon):
 
     for v in range(max_scaled_value, -1, -1):
         if dp[v] <= capacity:
-            return v * scale
+            return v * scale  # Approximate original value
     return 0
-
-if __name__ == "__main__":
-    items = [Item(60, 10), Item(100, 20), Item(120, 30)]
-    capacity = 50
-    print("Greedy:", greedy_knapsack(items, capacity))
-    print("FPTAS (ε=0.1):", fptas_knapsack(items, capacity, 0.1))
